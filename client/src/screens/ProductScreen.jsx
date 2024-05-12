@@ -1,4 +1,4 @@
-import { MinusIcon, SmallAddIcon } from "@chakra-ui/icons";
+import { MinusIcon, SmallAddIcon } from '@chakra-ui/icons';
 import {
 	Alert,
 	AlertDescription,
@@ -16,31 +16,49 @@ import {
 	Stack,
 	Text,
 	Wrap,
-} from "@chakra-ui/react";
-import { BiCheckShield, BiPackage, BiSupport } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getProduct } from "../redux/actions/productActions";
-import { useEffect, useState } from "react";
-import Star from "../components/Star";
+	useToast,
+} from '@chakra-ui/react';
+import { BiCheckShield, BiPackage, BiSupport } from 'react-icons/bi';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { getProduct } from '../redux/actions/productActions';
+import { useEffect, useState } from 'react';
+import { addCartItem } from '../redux/actions/cartActions';
+import Star from '../components/Star';
 
 const ProductScreen = () => {
 	const [amount, setAmount] = useState(1);
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const { loading, error, product } = useSelector((state) => state.product);
+	const { cartItems } = useSelector((state) => state.cart);
+	const toast = useToast();
 
 	useEffect(() => {
 		dispatch(getProduct(id));
 	}, [dispatch, id]);
 
 	const changeAmount = (input) => {
-		if (input === "plus") {
+		if (input === 'plus') {
 			setAmount(amount + 1);
 		}
-		if (input === "minus") {
+		if (input === 'minus') {
 			setAmount(amount - 1);
 		}
+	};
+
+	const addItem = () => {
+		if (cartItems.some((cartItem) => cartItem.id === id)) {
+			cartItems.find((cartItem) => cartItem.id === id);
+			dispatch(addCartItem(id, amount));
+		} else {
+			dispatch(addCartItem(id, amount));
+		}
+		toast({
+			description: 'Item has been added.',
+			status: 'success',
+			isClosable: true,
+		});
 	};
 
 	return (
@@ -58,10 +76,10 @@ const ProductScreen = () => {
 			) : (
 				product && (
 					<Box
-						maxW={{ base: "3xl", lg: "5xl" }}
+						maxW={{ base: '3xl', lg: '5xl' }}
 						mx='auto'
-						px={{ base: "4", md: "8", lg: "12" }}
-						py={{ base: "6", md: "8", lg: "12" }}>
+						px={{ base: '4', md: '8', lg: '12' }}
+						py={{ base: '6', md: '8', lg: '12' }}>
 						<Stack direction={{ base: 'column', lg: 'row' }} align='flex-start'>
 							<Stack pr={{ base: '0', md: 'row' }} flex='1.5' mb={{ base: '12', md: 'none' }}>
 								{product.productIsNew && (
@@ -108,12 +126,19 @@ const ProductScreen = () => {
 									<Badge fontSize='lg' width='170px' textAlign='center' colorScheme='gray'>
 										In Stock: {product.stock}
 									</Badge>
-									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='cyan' onClick={() => {}}>
+									<Button
+										variant='outline'
+										isDisabled={product.stock === 0}
+										colorScheme='cyan'
+										onClick={() => addItem()}>
 										Add to cart
 									</Button>
 									<Stack width='270px'>
 										<Flex alignItems='center'>
 											<BiPackage size='20px' />
+											<Text fontWeight='medium' fontSize='sm' ml='2'>
+												Shipped in 2 - 3 days
+											</Text>
 										</Flex>
 										<Flex alignItems='center'>
 											<BiCheckShield size='20px' />

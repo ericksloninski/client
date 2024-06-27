@@ -1,9 +1,8 @@
-import axios from "axios";
-import { setError, setLoading, setShippingCosts, cartItemAdd, cartItemRemoval, clearCart } from "../slices/cart";
+import axios from 'axios';
+import { setError, setLoading, setShippingCosts, cartItemAdd, cartItemRemoval, clearCart } from '../slices/cart';
 
 export const addCartItem = (id, qty) => async (dispatch) => {
 	dispatch(setLoading(true));
-
 	try {
 		const { data } = await axios.get(`/api/products/${id}`);
 		const itemToAdd = {
@@ -15,7 +14,7 @@ export const addCartItem = (id, qty) => async (dispatch) => {
 			stock: data.stock,
 			brand: data.brand,
 			qty,
-			stripeId: data.stipeId,
+			stripeId: data.stripeId,
 		};
 
 		dispatch(cartItemAdd(itemToAdd));
@@ -26,15 +25,15 @@ export const addCartItem = (id, qty) => async (dispatch) => {
 					? error.response.data.message
 					: error.message
 					? error.message
-					: "An expected error has ocured. Please try again later"
+					: 'An expected error has occured. Please try again later.'
 			)
 		);
 	}
 };
 
-export const removeCartItem = (id) => async (disptach) => {
-	disptach(setLoading(true));
-	disptach(cartItemRemoval(id));
+export const removeCartItem = (id) => async (dispatch) => {
+	dispatch(setLoading(true));
+	dispatch(cartItemRemoval(id));
 };
 
 export const setShipping = (value) => async (dispatch) => {
@@ -42,5 +41,5 @@ export const setShipping = (value) => async (dispatch) => {
 };
 
 export const resetCart = () => (dispatch) => {
-    dispatch(clearCart)
-}
+	dispatch(clearCart);
+};

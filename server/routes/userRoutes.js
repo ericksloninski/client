@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../middleware/sendVerificationEmail.js";
 import { sendPasswordResetEmail } from "../middleware/sendPasswordResetEmail.js";
 import { protectRoute } from "../middleware/authMiddleware.js";
+import Order from "../models/Order.js";
 
 const userRoutes = express.Router();
 
@@ -83,7 +84,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
 	user.active = true;
 	await user.save();
 	res.json("Thanks for activating your account. You can close this window now.");
-
 });
 
 // password reset request
@@ -170,11 +170,22 @@ const googleLogin = asyncHandler(async (req, res) => {
 	}
 });
 
+const getUserOrders = asyncHandler(async (req, res) => {
+	const orders = await Order.find({ user: req.params.id });
+	if (orders) {
+		res.json(orders);
+	} else {
+		res.status(404);
+		throw new Error("No Orders found.");
+	}
+});
+
 userRoutes.route("/login").post(loginUser);
 userRoutes.route("/register").post(registerUser);
 userRoutes.route("/verify-email").get(protectRoute, verifyEmail);
 userRoutes.route("/password-reset-request").post(passwordResetRequest);
 userRoutes.route("/password-reset").post(passwordReset);
 userRoutes.route("/google-login").post(googleLogin);
+userRoutes.route("/:id").get(protectRoute, getUserOrders);
 
 export default userRoutes;

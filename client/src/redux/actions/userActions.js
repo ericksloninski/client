@@ -12,6 +12,7 @@ import {
 } from "../slices/user";
 
 import { clearCart } from "../slices/cart";
+import { get } from "mongoose";
 
 export const login = (email, password) => async (dispatch) => {
 	dispatch(setLoading(true));
@@ -143,6 +144,31 @@ export const googleLogin = (googleId, email, name, googleImage) => async (dispat
 		const { data } = await axios.post('/api/users/google-login', { googleId, email, name, googleImage }, config);
 		dispatch(userLogin(data));
 		localStorage.setItem('userInfo', JSON.stringify(data));
+	} catch (error) {
+		dispatch(
+			setError(
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message
+					? error.message
+					: 'An expected error has occured. Please try again later.'
+			)
+		);
+	}
+};
+
+export const getUserOrders = () => async (dispatch, getState) => {
+    dispatch(setLoading(true));
+
+	const {
+		user: {userInfo}
+	} = getState();
+    
+	try {
+		const config = { headers: { Authorization: `Bearer ${userInfo.token}`, "Content-Type": "application/json" } };
+
+		const {data} = await axios.get(`/api/users/${userInfo._id}`, config)
+		dispatch(setUserOrders(data));
 	} catch (error) {
 		dispatch(
 			setError(

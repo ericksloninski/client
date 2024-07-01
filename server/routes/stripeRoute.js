@@ -1,21 +1,22 @@
-import express from 'express';
-import Stripe from 'stripe';
-import Order from '../models/Order.js';
-import Product from '../models/Product.js';
+import dotenv from "dotenv";
+dotenv.config();
 
-const stripe = new Stripe(
-	'sk_test_51PVJ8YBwFTLSjgnN2BT0jUXLkVg98JGYAWdankAHv2cmGArJaMd7YkbCLIHgFVxrFl0nU6YwftVm7auNOG92lbuw00jgI0YB92'
-);
+import express from "express";
+import Stripe from "stripe";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const stripeRoute = express.Router();
 
 const stripePayment = async (req, res) => {
 	const data = req.body;
-	console.log(req.body);
 
 	let lineItems = [];
 
-	if (data.shipping === 14.99) {
+	if (data.shipping == 14.99) {
 		lineItems.push({
 			price: process.env.EXPRESS_SHIPPING_ID,
 			quantity: 1,
@@ -36,9 +37,9 @@ const stripePayment = async (req, res) => {
 
 	const session = await stripe.checkout.sessions.create({
 		line_items: lineItems,
-		mode: 'payment',
-		success_url: 'http://localhost:3000/success',
-		cancel_url: 'http://localhost:3000/cancel',
+		mode: "payment",
+		success_url: "http://localhost:3000/success",
+		cancel_url: "http://localhost:3000/cancel",
 	});
 
 	const order = new Order({
@@ -68,9 +69,6 @@ const stripePayment = async (req, res) => {
 	);
 };
 
-stripeRoute.route('/').post(stripePayment);
+stripeRoute.route("/").post(protectRoute, stripePayment);
 
 export default stripeRoute;
-
-
-

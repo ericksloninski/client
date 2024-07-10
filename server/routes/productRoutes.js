@@ -106,7 +106,7 @@ const createNewProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-	const { brand, name, category, stock, price, id, images, productIsNew, description, subtitle, stripeId } = req.body;
+	const { brand, name, category, stock, price, id, images, productIsNew, description, subtitle, stripeId, imageOne, imageTwo } = req.body;
 
 	const product = await Product.findById(id);
 
@@ -120,6 +120,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 		product.stock = stock;
 		product.productIsNew = productIsNew;
 		product.stripeId = stripeId;
+		product.images = [imageOne, imageTwo]
 
 		await product.save();
 

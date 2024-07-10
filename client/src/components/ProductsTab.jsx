@@ -84,6 +84,7 @@ const ProductsTab = () => {
 					<Table variant='simple' size='lg'>
 						<Thead>
 							<Tr>
+								<Th>Images</Th>
 								<Th>Description</Th>
 								<Th>Brand & Name</Th>
 								<Th>StripeId & Subtitle</Th>

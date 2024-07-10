@@ -1,4 +1,4 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
 	Badge,
 	Button,
@@ -12,12 +12,12 @@ import {
 	Tr,
 	VStack,
 	useDisclosure,
-} from '@chakra-ui/react';
-import { useRef, useState } from 'react';
-import { MdOutlineDataSaverOn } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
-import { deleteProduct, updateProduct } from '../redux/actions/adminActions';
-import ConfirmRemovalAlert from './ConfirmRemovalAlert';
+} from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { MdOutlineDataSaverOn } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { deleteProduct, updateProduct } from "../redux/actions/adminActions";
+import ConfirmRemovalAlert from "./ConfirmRemovalAlert";
 
 const ProductTableItem = ({ product }) => {
 	const cancelRef = useRef();
@@ -30,12 +30,29 @@ const ProductTableItem = ({ product }) => {
 	const [productIsNew, setProductIsNew] = useState(product.productIsNew);
 	const [description, setDescription] = useState(product.description);
 	const [subtitle, setSubtitle] = useState(product.subtitle);
+	const [imageOne, setImageOne] = useState(product.images[0]);
+	const [imageTwo, setImageTwo] = useState(product.images[1]);
 	const [stripeId, setStripeId] = useState(product.stripeId);
-	
+
 	const dispatch = useDispatch();
 
 	const onSaveProduct = () => {
-		dispatch(updateProduct(brand, name, category, stock, price, product._id, productIsNew, description, subtitle, stripeId));
+		dispatch(
+			updateProduct(
+				brand,
+				name,
+				category,
+				stock,
+				price,
+				product._id,
+				productIsNew,
+				description,
+				subtitle,
+				stripeId,
+				imageOne,
+				imageTwo
+			)
+		);
 	};
 
 	const openDeleteConfirmBox = () => {
@@ -45,6 +62,12 @@ const ProductTableItem = ({ product }) => {
 	return (
 		<>
 			<Tr>
+				<Td>
+					<Flex direction='column' gap='2'>
+						<Input size='sm' value={imageOne} onChange={(e) => setImageOne(e.target.value)} />
+						<Input size='sm' value={imageTwo} onChange={(e) => setImageTwo(e.target.value)} />
+					</Flex>
+				</Td>
 				<Td>
 					<Textarea
 						w='270px'
@@ -93,8 +116,8 @@ const ProductTableItem = ({ product }) => {
 							<DeleteIcon mr='5px' />
 							Remove Product
 						</Button>
-						<Button colorScheme='orange' w='160px' variant='outline' onClick={onSaveProduct}>
-							<MdOutlineDataSaverOn style={{ marginRight: '5px' }} />
+						<Button colorScheme='green' w='160px' variant='outline' onClick={onSaveProduct}>
+							<MdOutlineDataSaverOn style={{ marginRight: "5px" }} />
 							Save Changes
 						</Button>
 					</VStack>

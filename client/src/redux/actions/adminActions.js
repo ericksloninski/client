@@ -140,7 +140,7 @@ export const resetErrorAndRemoval = () => async (disptach) => {
 };
 
 export const updateProduct =
-	(brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId ) => async (dispatch, getState) => {
+	(brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId, imageOne, imageTwo ) => async (dispatch, getState) => {
 		setLoading();
 
 		const {
@@ -152,7 +152,7 @@ export const updateProduct =
 		try {
 			const { data } = await axios.put(
 				"api/products",
-				{ brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId },
+				{ brand, name, category, stock, price, id, productIsNew, description, subtitle, stripeId, imageOne, imageTwo },
 				config
 			);
 			dispatch(setProducts(data));

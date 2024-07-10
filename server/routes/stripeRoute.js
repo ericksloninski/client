@@ -50,7 +50,7 @@ const stripePayment = async (req, res) => {
 		shippingAddress: data.shippingAddress,
 		shippingPrice: data.shipping,
 		subtotal: data.subtotal,
-		totalPrice: data.subtotal + data.shipping,
+		totalPrice: Number(data.subtotal + data.shipping).toFixed(2),
 	});
 
 	const newOrder = await order.save();

@@ -170,7 +170,8 @@ const Header = () => {
 										<>
 											<MenuDivider />
 											<MenuItem as={ReactLink} to='/admin-console'>
-												Admin Console
+												<MdOutlineAdminPanelSettings />
+												<Text ml='2'>Admin Console</Text>
 											</MenuItem>
 										</>
 									)}

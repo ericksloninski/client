@@ -1,3 +1,4 @@
+import { resetError } from "../slices/admin";
 import product, {
 	setProducts,
 	setLoading,
@@ -103,4 +104,8 @@ export const createProductReview = (productId, userId, comment, rating, title) =
 			)
 		);
 	}
+}
+
+export const resetProductError = () => async (dispatch) => {
+	dispatch(resetError());
 }
